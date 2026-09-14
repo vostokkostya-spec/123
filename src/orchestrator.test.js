@@ -2,7 +2,28 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { createOrchestrator, classifyTask, parseCoderResponse, parseReviewerVerdict, truncateFileContext } from './orchestrator.js';
-import { getDefaultAgents } from './agents.js';
+import { getDefaultAgents, getKeywordMatches, pickBestAgent } from './agents.js';
+
+test('keyword routing maps implementation problems to coder', () => {
+  assert.deepEqual(getKeywordMatches('Fix the login bug'), ['coder']);
+  assert.equal(pickBestAgent('Fix the login bug'), 'coder');
+  assert.deepEqual(getKeywordMatches('проверь качество'), ['reviewer']);
+  assert.equal(pickBestAgent('проверь качество'), 'reviewer');
+});
+
+test('keyword fallback uses the same selection as the fast path', async () => {
+  const previousFetch = global.fetch;
+  global.fetch = async () => {
+    throw new Error('ECONNREFUSED');
+  };
+  try {
+    const result = await createOrchestrator().routeTask('Fix the login bug', { forceLLM: true });
+    assert.equal(result.routing, 'keyword');
+    assert.equal(result.agent.id, 'coder');
+  } finally {
+    global.fetch = previousFetch;
+  }
+});
 
 test('coder response parsing rejects missing required markers', () => {
   assert.throws(

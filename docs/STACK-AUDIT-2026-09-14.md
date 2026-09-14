@@ -83,7 +83,8 @@ No authenticated social or browser-cookie data was accessed.
 - Live unavailable-Ollama route: returned keyword fallback with exit code 0.
 - Routing mocks cover valid output, unknown agent, missing marker, timeout, and connection failure.
 - Router request verification: `temperature=0`, `num_predict=120`.
-- CLI examples: `keyword -> reviewer` for `Fix the login bug`; `llm -> planner (reason: ...)` for a release-planning request.
+- CLI examples: `keyword -> coder` for `Fix the login bug`; `llm -> planner (reason: ...)` for a release-planning request.
+- Routing correction: implementation words now map to `coder`; the keyword selector is shared by fast routing and fallback, preventing online/offline divergence.
 - Live coder/reviewer flow: proposed the intended arithmetic fix and returned `VERDICT: APPROVE`.
 - CI was green for the hybrid routing changes; PR #5 is open, `MERGEABLE`, and `CLEAN`.
 - Agent Reach is v1.5.0 and the update check reports no newer version.

@@ -74,6 +74,7 @@ node src/index.js ollama-prompt "prompt"
 
 - `security` and `ops` are intentionally rules-based, not LLM-backed.
 - Keyword routing can misclassify ambiguous tasks.
+- Keyword rules map implementation words (`fix`, `bug`, `error`, `исправь`, `ошибка`) to `coder`; review words map to `reviewer`, and the same selector is used for fast routing and LLM fallback.
 - Hybrid LLM routing is now available: one unambiguous keyword match stays on the fast path, while ambiguous or forced `--llm` routes use deterministic Ollama classification and fall back to keywords on any failure.
 - Routing classification uses `temperature=0`; CLI output includes a human-readable `routingLabel`.
 - The stack audit is documented in `docs/STACK-AUDIT-2026-09-14.md`; no browser cookies, external disks, or personal databases were indexed.

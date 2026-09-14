@@ -38,33 +38,18 @@ export function getDefaultAgents() {
 export function pickBestAgent(taskText) {
   const normalized = taskText.toLowerCase();
 
-  if (/(fix|bug|error|review|quality|lint|test)/.test(normalized)) {
-    return 'reviewer';
-  }
-
-  if (/(security|secret|auth|risk|vuln)/.test(normalized)) {
-    return 'security';
-  }
-
-  if (/(build|deploy|run|docker|ci|ops)/.test(normalized)) {
-    return 'ops';
-  }
-
-  if (/(plan|roadmap|spec|architecture|strategy)/.test(normalized)) {
-    return 'planner';
-  }
-
-  return 'coder';
+  return getKeywordMatches(normalized)[0] ?? 'coder';
 }
 
 export function getKeywordMatches(taskText) {
   const normalized = taskText.toLowerCase();
   const matches = [];
 
-  if (/(fix|bug|error|review|quality|lint|test)/.test(normalized)) matches.push('reviewer');
+  if (/(fix|bug|error|исправь|ошибк)/.test(normalized)) matches.push('coder');
+  if (/(review|quality|lint|test|check|audit|проверь)/.test(normalized)) matches.push('reviewer');
   if (/(security|secret|auth|risk|vuln)/.test(normalized)) matches.push('security');
-  if (/(build|deploy|run|docker|ci|ops)/.test(normalized)) matches.push('ops');
-  if (/(plan|roadmap|spec|architecture|strategy)/.test(normalized)) matches.push('planner');
+  if (/(build|deploy|run|docker|ci|ops|release)/.test(normalized)) matches.push('ops');
+  if (/(plan|roadmap|spec|architecture|strategy|план)/.test(normalized)) matches.push('planner');
 
   return matches;
 }
