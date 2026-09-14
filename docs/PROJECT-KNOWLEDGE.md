@@ -84,6 +84,7 @@ node src/index.js ollama-prompt "prompt"
 - Public documentation confirms Ollama structured JSON/schema output and VS Code workspace/user agent customization scopes; these are recorded as planned integrations, not yet enabled.
 - Agent Reach v1.5.0 is current. GitHub CLI, web, RSS, YouTube, Bilibili, and V2EX paths are available; login-dependent channels remain unconfigured.
 - The consolidated task register is `docs/TASKS.md`; VS Code now has `.vscode/tasks.json` for repeatable test, Ollama, and routing smoke commands.
+- VS Code launch profiles are in `.vscode/launch.json`; shared Codex/agent rules are in `AGENTS.md`.
 - Merge protocol: no autonomous merges; require closed review, green required CI on the final commit, and explicit owner confirmation, then record the merge commit.
 
 ## Next safe steps

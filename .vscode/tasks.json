@@ -14,6 +14,12 @@
       "problemMatcher": []
     },
     {
+      "label": "diagnose: project",
+      "type": "shell",
+      "command": "node src/index.js --diagnose",
+      "problemMatcher": []
+    },
+    {
       "label": "smoke: keyword route",
       "type": "shell",
       "command": "node src/index.js route \"Fix the login bug\"",
@@ -24,6 +30,24 @@
       "type": "shell",
       "command": "node src/index.js route \"How should we organize the project release?\" --llm",
       "problemMatcher": []
+    },
+    {
+      "label": "coder: propose file change",
+      "type": "shell",
+      "command": "node src/index.js code \"${input:coderTask}\" --file ${input:coderFile}",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "coderTask",
+      "type": "promptString",
+      "description": "Task for the coder agent"
+    },
+    {
+      "id": "coderFile",
+      "type": "promptString",
+      "description": "Workspace-relative file path"
     }
   ]
 }

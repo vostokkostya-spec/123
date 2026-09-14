@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "CLI: diagnose",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/index.js",
+      "args": [
+        "--diagnose"
+      ],
+      "console": "integratedTerminal",
+      "env": {
+        "OLLAMA_BASE_URL": "http://localhost:11434",
+        "OLLAMA_MODEL": "qwen3:4b-instruct"
+      }
+    },
+    {
+      "name": "CLI: route task",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/index.js",
+      "args": [
+        "route",
+        "Fix the login bug"
+      ],
+      "console": "integratedTerminal",
+      "env": {
+        "OLLAMA_BASE_URL": "http://localhost:11434",
+        "OLLAMA_MODEL": "qwen3:4b-instruct"
+      }
+    },
+    {
+      "name": "CLI: forced LLM route",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/index.js",
+      "args": [
+        "route",
+        "How should we organize the project release?",
+        "--llm"
+      ],
+      "console": "integratedTerminal",
+      "env": {
+        "OLLAMA_BASE_URL": "http://localhost:11434",
+        "OLLAMA_MODEL": "qwen3:4b-instruct"
+      }
+    }
+  ]
+}

@@ -53,6 +53,10 @@ node src/index.js route "How should we organize the project release?" --llm
 node src/index.js code "Add input validation" --file src/example.js
 ```
 
+The Run and Debug panel uses `.vscode/launch.json`; the Tasks panel uses
+`.vscode/tasks.json`. The workspace keeps model and endpoint defaults local to
+the integrated terminal and launch profiles; no global VS Code settings are changed.
+
 ## Research and installation policy
 
 The audit checked public GitHub, Ollama, VS Code, and Agent Reach documentation. No additional agent, model, application, browser extension, or global package was installed. Installation requires a named use case, a pinned/auditable source, a defined data boundary, and a rollback path.
