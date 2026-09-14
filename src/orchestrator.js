@@ -136,7 +136,8 @@ export async function runAgentLLM(taskText, agentId, options = {}) {
     };
   }
 
-  const llmResult = await generateWithOllama(prompt, process.env.OLLAMA_MODEL, {
+  const llmResult = await generateWithOllama(prompt, undefined, {
+    agentId,
     timeoutMs: options.timeoutMs ?? 60000,
     numPredict: options.numPredict,
     temperature: options.temperature

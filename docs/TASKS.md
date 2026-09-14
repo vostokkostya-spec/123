@@ -41,6 +41,7 @@ This register consolidates the tasks found in the repository history, merged pul
 - PR #5 merged as `00e2e8d`.
 - Merge protocol is now explicit: closed review, green required CI on the final commit, and explicit owner confirmation.
 - Ollama is configured for local-only, single-model, single-request operation and will be revalidated after reboot.
+- Local model inventory: four generation models plus two embedding models, which are excluded from generation. Cloud model switching is configured by role-specific environment variables but remains opt-in until authentication is present.
 
 ## VS Code shortcuts
 

@@ -2,6 +2,19 @@ const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
 const DEFAULT_OLLAMA_MODEL = 'qwen3:4b-instruct';
 const DEFAULT_OLLAMA_NUM_CTX = 8192;
 
+export function resolveAgentModel(agentId, requestedModel) {
+  if (requestedModel) return requestedModel;
+
+  const roleEnv = {
+    planner: 'OLLAMA_PLANNER_MODEL',
+    coder: 'OLLAMA_CODER_MODEL',
+    reviewer: 'OLLAMA_REVIEWER_MODEL',
+    router: 'OLLAMA_ROUTER_MODEL'
+  }[agentId];
+
+  return (roleEnv && process.env[roleEnv]) || process.env.OLLAMA_MODEL || undefined;
+}
+
 export function resolveNumCtx() {
   const configured = Number.parseInt(process.env.OLLAMA_NUM_CTX || '', 10);
   if (Number.isFinite(configured) && configured > 0) {
@@ -92,7 +105,7 @@ export async function generateWithOllama(prompt, model, options = {}) {
     throw new Error(`${status.summary}. Start Ollama, then run: ollama serve or the relevant service command.`);
   }
 
-  const selectedModel = pickPreferredModel(model, status.models);
+  const selectedModel = pickPreferredModel(resolveAgentModel(options.agentId, model), status.models);
   const numCtx = resolveNumCtx();
 
   const payload = {

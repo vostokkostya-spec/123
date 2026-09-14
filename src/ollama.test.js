@@ -1,7 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { generateWithOllama, pickPreferredModel, resolveNumCtx } from './ollama.js';
+import { generateWithOllama, pickPreferredModel, resolveAgentModel, resolveNumCtx } from './ollama.js';
+
+test('resolveAgentModel supports role-specific model switching', () => {
+  const previous = process.env.OLLAMA_PLANNER_MODEL;
+  process.env.OLLAMA_PLANNER_MODEL = 'gpt-oss:120b-cloud';
+  try {
+    assert.equal(resolveAgentModel('planner'), 'gpt-oss:120b-cloud');
+    assert.equal(resolveAgentModel('coder', 'qwen3:4b-instruct'), 'qwen3:4b-instruct');
+  } finally {
+    if (previous === undefined) delete process.env.OLLAMA_PLANNER_MODEL;
+    else process.env.OLLAMA_PLANNER_MODEL = previous;
+  }
+});
 
 test('pickPreferredModel accepts an explicit override', () => {
   assert.equal(pickPreferredModel('custom-model', ['qwen3:4b', 'all-minilm:latest']), 'custom-model');

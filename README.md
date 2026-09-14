@@ -65,6 +65,11 @@ OLLAMA_MODEL=llama3.1:8b node src/index.js ollama-status
 OLLAMA_MODEL=llama3.1:8b node src/index.js ollama-prompt "Explain the project architecture"
 ```
 
+Role-specific model overrides are supported with `OLLAMA_PLANNER_MODEL`,
+`OLLAMA_CODER_MODEL`, `OLLAMA_REVIEWER_MODEL`, and `OLLAMA_ROUTER_MODEL`.
+See `docs/MODEL-MATRIX.md` before assigning a cloud model; cloud inference
+requires Ollama authentication and sends prompt context off the machine.
+
 ## CI workflow
 
 This repo includes a GitHub Actions workflow at `.github/workflows/ci.yml` that runs on push and pull requests.

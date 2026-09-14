@@ -62,6 +62,7 @@ node src/index.js ollama-prompt "prompt"
 - Embedding models observed: `all-minilm:latest`, `qwen3-embedding:0.6b`; these must not be selected for generation.
 - Hardware observed: AMD Radeon RX 580 with approximately 4 GB VRAM and about 31.1 GB system RAM. NVIDIA acceleration was not available.
 - Windows Ollama user settings are configured for this machine: `OLLAMA_HOST=127.0.0.1:11434`, `OLLAMA_NUM_PARALLEL=1`, `OLLAMA_MAX_LOADED_MODELS=1`, and `OLLAMA_KEEP_ALIVE=5m`. The Ollama startup shortcut is present in the user Startup folder; these environment values take effect after reboot.
+- Model switching is role-aware: `OLLAMA_PLANNER_MODEL`, `OLLAMA_CODER_MODEL`, `OLLAMA_REVIEWER_MODEL`, and `OLLAMA_ROUTER_MODEL` override the shared `OLLAMA_MODEL`; unset roles use the safe local default. Cloud names can be assigned only after Ollama cloud authentication is configured.
 
 ## Verification record
 
