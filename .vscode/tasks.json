@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test: orchestration",
+      "type": "shell",
+      "command": "npm.cmd test",
+      "problemMatcher": []
+    },
+    {
+      "label": "diagnose: Ollama",
+      "type": "shell",
+      "command": "node src/index.js ollama-status",
+      "problemMatcher": []
+    },
+    {
+      "label": "smoke: keyword route",
+      "type": "shell",
+      "command": "node src/index.js route \"Fix the login bug\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "smoke: forced LLM route",
+      "type": "shell",
+      "command": "node src/index.js route \"How should we organize the project release?\" --llm",
+      "problemMatcher": []
+    }
+  ]
+}

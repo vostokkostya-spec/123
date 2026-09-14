@@ -1,6 +1,6 @@
 # AI stack audit report
 
-**Date:** 2026-09-14 12:40 MSK
+**Date:** 2026-09-14 12:47 MSK
 **Scope:** Current repository, GitHub repository metadata/CI, local Ollama API, and public technical documentation.  
 **Excluded:** Browser windows, Chrome cookies, VS Code/Codex private session databases, external disks, personal files, and unapproved software installation.
 
@@ -88,15 +88,12 @@ No authenticated social or browser-cookie data was accessed.
 - Live coder/reviewer flow: proposed the intended arithmetic fix and returned `VERDICT: APPROVE`.
 - PR #5 was merged as `00e2e8d`; post-merge local tests and routing smoke test completed successfully.
 - Agent Reach is v1.5.0 and the update check reports no newer version.
+- No `.vscode/tasks.json`, Codex export, private chat transcript, Chrome tab export, or external task database was present in the workspace; these are explicitly recorded as blocked imports in `docs/TASKS.md`.
+- Public comparison search found local orchestration projects, but no third-party agent was installed because no concrete requirement and safe data boundary were established.
 
 ## Open tasks
 
-1. Replace beginning-only truncation with chunking or a head/tail strategy.
-2. Replace marker-only routing with Ollama structured JSON after adding schema validation and compatibility tests.
-3. Add a reviewer gate that prevents `--apply` when the verdict is `ISSUES`.
-4. Add persistent task history only after defining retention and redaction rules.
-5. Extend coder proposals to multiple files only after adding path, size, and review safeguards.
-6. Evaluate optional third-party agents one at a time, from pinned, auditable sources.
+The consolidated task register is `docs/TASKS.md`. The current task is long-file chunking; structured router output, reviewer gating, persistent memory, and multi-file proposals follow in that order.
 
 ## Conclusion
 

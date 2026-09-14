@@ -1,6 +1,6 @@
 # Project knowledge base
 
-**Generated:** 2026-09-14 12:40 MSK
+**Generated:** 2026-09-14 12:47 MSK
 **Scope:** Current repository only. No personal folders, external disks, or private data were indexed.
 
 ## Executive summary
@@ -83,6 +83,7 @@ node src/index.js ollama-prompt "prompt"
 - No external knowledge corpus was downloaded because the approved scope was the current repository only.
 - Public documentation confirms Ollama structured JSON/schema output and VS Code workspace/user agent customization scopes; these are recorded as planned integrations, not yet enabled.
 - Agent Reach v1.5.0 is current. GitHub CLI, web, RSS, YouTube, Bilibili, and V2EX paths are available; login-dependent channels remain unconfigured.
+- The consolidated task register is `docs/TASKS.md`; VS Code now has `.vscode/tasks.json` for repeatable test, Ollama, and routing smoke commands.
 
 ## Next safe steps
 
