@@ -84,3 +84,16 @@ test('generateWithOllama throws a usable error when Ollama is unavailable', asyn
     global.fetch = previousFetch;
   }
 });
+
+test('generateWithOllama surfaces a timeout without hiding it', async () => {
+  const previousFetch = global.fetch;
+  global.fetch = async () => {
+    throw new DOMException('The operation was aborted due to timeout', 'TimeoutError');
+  };
+
+  try {
+    await assert.rejects(generateWithOllama('ping'), /timeout|aborted/i);
+  } finally {
+    global.fetch = previousFetch;
+  }
+});
