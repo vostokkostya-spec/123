@@ -68,7 +68,7 @@ node src/index.js ollama-prompt "prompt"
 - Live coder test: corrected an intentional `a - b` bug to `a + b`.
 - Live reviewer test: returned `VERDICT: APPROVE`.
 - No-apply verification: the source file remained unchanged.
-- CI: PR #5 is open, mergeable, and its `validate` checks are green.
+- CI: PR #5 was merged as `00e2e8d`; post-merge local validation is green.
 
 ## Known gaps
 
@@ -86,9 +86,8 @@ node src/index.js ollama-prompt "prompt"
 
 ## Next safe steps
 
-1. Merge and verify the hybrid LLM routing PR.
+1. Implement bounded head/tail or chunked context for long files.
 2. Replace marker-only routing with Ollama structured JSON and schema validation.
 3. Add a reviewer gate that blocks `--apply` on `ISSUES`.
 4. Add structured task history only after defining retention and redaction rules.
-5. Add chunking for long files instead of truncating only the beginning.
-6. Add multi-file proposals only after extending path validation and review coverage.
+5. Add multi-file proposals only after extending path validation and review coverage.
