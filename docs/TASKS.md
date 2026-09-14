@@ -40,6 +40,7 @@ This register consolidates the tasks found in the repository history, merged pul
 - Routing regression coverage: 18/18 tests passing.
 - PR #5 merged as `00e2e8d`.
 - Merge protocol is now explicit: closed review, green required CI on the final commit, and explicit owner confirmation.
+- Ollama is configured for local-only, single-model, single-request operation and will be revalidated after reboot.
 
 ## VS Code shortcuts
 
