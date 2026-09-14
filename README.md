@@ -27,14 +27,29 @@ Human
                    └─ task delegation and validation
 ```
 
+For file changes, the safe flow is:
+
+```text
+task → coder (LLM) → diff → reviewer (LLM) → manual confirmation → apply
+```
+
 ## Quick start
 
 ```bash
 node src/index.js --diagnose
 node src/index.js route "Fix the login bug in the payment flow"
 node src/index.js task "Plan a release workflow"
+node src/index.js code "Add input validation" --file src/example.js
 node src/index.js ollama-status
 ```
+
+The `code` command never writes files by default. It reads the requested file (or treats it as new), limits the model context to approximately 4,500 tokens, prints a proposed diff and reviewer result, and only asks to write after `--apply` is explicitly supplied:
+
+```bash
+node src/index.js code "Add input validation" --file src/example.js --apply
+```
+
+Code generation uses a 300-second timeout by default; set `OLLAMA_TIMEOUT` to override it for `code`. Planner and reviewer requests use 60 seconds. The model receives `num_ctx=8192` and a response budget of up to 3,000 tokens.
 
 ## Ollama integration
 

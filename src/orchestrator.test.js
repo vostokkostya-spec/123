@@ -1,7 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createOrchestrator } from './orchestrator.js';
+import { createOrchestrator, parseCoderResponse, truncateFileContext } from './orchestrator.js';
+
+test('coder response parsing rejects missing required markers', () => {
+  assert.throws(
+    () => parseCoderResponse('plain text', 'src/example.js'),
+    /expected ### FILE and ### EXPLANATION/
+  );
+});
+
+test('coder context is bounded to the input budget', () => {
+  const context = truncateFileContext('a'.repeat(20000));
+  assert.ok(context.length < 20000);
+  assert.match(context, /Context truncated/);
+});
 
 test('coder uses the Ollama-backed implementation prompt', async () => {
   const previousFetch = global.fetch;

@@ -1,5 +1,5 @@
 const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
-const DEFAULT_OLLAMA_MODEL = 'qwen3:4b';
+const DEFAULT_OLLAMA_MODEL = 'qwen3:4b-instruct';
 const DEFAULT_OLLAMA_NUM_CTX = 8192;
 
 export function resolveNumCtx() {
@@ -43,7 +43,7 @@ export function pickPreferredModel(requestedModel, availableModels = []) {
 }
 
 async function fetchJson(url, options = {}) {
-  const signal = options.signal ?? AbortSignal.timeout(60000);
+  const signal = options.signal ?? AbortSignal.timeout(options.timeoutMs ?? 60000);
   const response = await fetch(url, { ...options, signal });
 
   if (!response.ok) {
@@ -85,7 +85,7 @@ export async function getOllamaStatus() {
   }
 }
 
-export async function generateWithOllama(prompt, model) {
+export async function generateWithOllama(prompt, model, options = {}) {
   const status = await getOllamaStatus();
 
   if (!status.online) {
@@ -102,19 +102,24 @@ export async function generateWithOllama(prompt, model) {
     options: {
       temperature: 0.2,
       top_p: 0.9,
-      num_ctx: numCtx
+      num_ctx: numCtx,
+      ...(options.numPredict ? { num_predict: options.numPredict } : {})
     }
   };
 
+  const configuredTimeout = Number.parseInt(process.env.OLLAMA_TIMEOUT || '', 10);
+  const timeoutMs = options.timeoutMs ?? (Number.isFinite(configuredTimeout) && configuredTimeout > 0 ? configuredTimeout : 60000);
   const response = await fetchJson(`${OLLAMA_BASE_URL}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
+    timeoutMs
   });
 
   return {
     model: selectedModel,
     num_ctx: numCtx,
+    timeoutMs,
     text: response?.response || '',
     done: !!response?.done,
     status
