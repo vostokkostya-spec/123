@@ -14,6 +14,7 @@ function printHelp() {
 Usage:
   node src/index.js --diagnose
   node src/index.js route "fix auth bug"
+  node src/index.js route "ambiguous task" --llm
   node src/index.js task "plan a release workflow"
   node src/index.js code "add input validation" --file src/example.js [--apply]
   node src/index.js ollama-status
@@ -71,8 +72,9 @@ async function main() {
   }
 
   if (args[0] === 'route') {
-    const taskText = args.slice(1).join(' ') || 'Plan the next engineering step for this repository.';
-    const routeResult = await orchestrator.run(taskText);
+    const forceLLM = args.includes('--llm');
+    const taskText = args.slice(1).filter((arg) => arg !== '--llm').join(' ') || 'Plan the next engineering step for this repository.';
+    const routeResult = await orchestrator.run(taskText, { forceLLM });
     const ollamaStatus = await getOllamaStatus();
 
     if (!ollamaStatus.online) {

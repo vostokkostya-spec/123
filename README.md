@@ -38,6 +38,7 @@ task → coder (LLM) → diff → reviewer (LLM) → manual confirmation → app
 ```bash
 node src/index.js --diagnose
 node src/index.js route "Fix the login bug in the payment flow"
+node src/index.js route "Classify this ambiguous task" --llm
 node src/index.js task "Plan a release workflow"
 node src/index.js code "Add input validation" --file src/example.js
 node src/index.js ollama-status
@@ -50,6 +51,10 @@ node src/index.js code "Add input validation" --file src/example.js --apply
 ```
 
 Code generation uses a 300-second timeout by default; set `OLLAMA_TIMEOUT` to override it for `code`. Planner and reviewer requests use 60 seconds. The model receives `num_ctx=8192` and a response budget of up to 3,000 tokens.
+
+## Hybrid routing
+
+`route` uses a fast keyword path for one unambiguous match. Ambiguous tasks, or any task passed with `--llm`, are classified by Ollama with `temperature=0` and the strict `### AGENT` / `### REASON` format. Invalid output, timeout, connection errors, or unavailable Ollama fall back to keyword routing and never break the command.
 
 ## Ollama integration
 

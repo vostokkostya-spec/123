@@ -56,3 +56,15 @@ export function pickBestAgent(taskText) {
 
   return 'coder';
 }
+
+export function getKeywordMatches(taskText) {
+  const normalized = taskText.toLowerCase();
+  const matches = [];
+
+  if (/(fix|bug|error|review|quality|lint|test)/.test(normalized)) matches.push('reviewer');
+  if (/(security|secret|auth|risk|vuln)/.test(normalized)) matches.push('security');
+  if (/(build|deploy|run|docker|ci|ops)/.test(normalized)) matches.push('ops');
+  if (/(plan|roadmap|spec|architecture|strategy)/.test(normalized)) matches.push('planner');
+
+  return matches;
+}

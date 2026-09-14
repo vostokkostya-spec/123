@@ -100,7 +100,7 @@ export async function generateWithOllama(prompt, model, options = {}) {
     prompt,
     stream: false,
     options: {
-      temperature: 0.2,
+      temperature: options.temperature ?? 0.2,
       top_p: 0.9,
       num_ctx: numCtx,
       ...(options.numPredict ? { num_predict: options.numPredict } : {})
