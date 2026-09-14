@@ -8,9 +8,9 @@ The local Ollama registry was checked at this timestamp. All six detected
 entries are present and readable: four generation models and two embedding
 models. No local model from the current inventory is missing.
 
-Ollama Cloud subscription status cannot be inferred from the local model list.
-This machine currently has no `OLLAMA_API_KEY` configured; cloud access must be
-verified interactively with `ollama signin` or an explicitly supplied API key.
+Ollama Cloud CLI authentication is active for account `vostokkostya`. A live
+safe test using `gpt-oss:20b-cloud` returned `CONNECTED`. No API key is stored
+in the workspace; the CLI sign-in session is used.
 
 ## Local models detected
 
@@ -27,7 +27,10 @@ The application filters embedding models from automatic generation selection. Th
 
 ## Cloud models
 
-Ollama's cloud catalog is account-dependent and larger than four models. Publicly documented examples include `gpt-oss:20b`, `gpt-oss:120b`, `qwen3.5:397b`, `deepseek-v4-flash`, `glm-5.3-flash`, `kimi-k2.7-code`, and other changing catalog entries. Exact availability must be checked after `ollama signin` or with an `OLLAMA_API_KEY`; no cloud credential is currently configured.
+Ollama's cloud catalog is account-dependent and larger than four models. This
+account currently exposes `gpt-oss:20b-cloud` through the local Ollama
+registry. Other public examples include `gpt-oss:120b`, `qwen3.5:397b`,
+`deepseek-v4-flash`, `glm-5.3-flash`, and `kimi-k2.7-code`.
 
 Cloud models are not downloaded into local VRAM. Ollama forwards inference to its cloud service, so prompts and relevant file context leave the machine. Use them only for approved, non-sensitive tasks.
 
