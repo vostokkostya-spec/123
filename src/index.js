@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import readline from 'node:readline/promises';
 import { createOrchestrator, runDiagnosis } from './orchestrator.js';
-import { buildReviewerPrompt, runAgentLLM, runCodeAgent } from './orchestrator.js';
+import { buildReviewerPrompt, parseReviewerVerdict, runAgentLLM, runCodeAgent } from './orchestrator.js';
 import { generateWithOllama, getOllamaStatus, resolveNumCtx } from './ollama.js';
 
 const args = process.argv.slice(2);
@@ -46,6 +46,10 @@ function resolveWorkspaceFile(filePath) {
 }
 
 async function confirmApply(filePath) {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) {
+    throw new Error('Refusing --apply in non-interactive mode. Run the command in a terminal and confirm the write interactively.');
+  }
+
   const input = readline.createInterface({ input: process.stdin, output: process.stdout });
   try {
     const answer = await input.question(`Apply generated changes to ${filePath}? [y/N] `);
@@ -114,9 +118,14 @@ async function main() {
         file: generated.path,
         model: generated.model,
         timeoutMs: generated.timeoutMs,
+        contextTruncated: generated.contextTruncated,
+        warning: generated.contextTruncated ? 'Input file context was truncated to approximately 4500 tokens.' : undefined,
         explanation: generated.explanation,
         diff: generated.diff,
-        reviewer
+        reviewer: {
+          ...reviewer,
+          verdict: parseReviewerVerdict(reviewer.summary || '')
+        }
       };
 
       console.log(JSON.stringify(result, null, 2));

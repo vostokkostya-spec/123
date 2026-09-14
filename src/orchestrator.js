@@ -19,8 +19,11 @@ export function buildCodePrompt(taskText, filePath, currentContent) {
 
 export function truncateFileContext(content, maxTokens = 4500) {
   const maxCharacters = maxTokens * 4;
-  if (content.length <= maxCharacters) return content;
-  return `${content.slice(0, maxCharacters)}\n\n[Context truncated at approximately ${maxTokens} tokens]`;
+  if (content.length <= maxCharacters) return { content, truncated: false };
+  return {
+    content: `${content.slice(0, maxCharacters)}\n\n[Context truncated at approximately ${maxTokens} tokens]`,
+    truncated: true
+  };
 }
 
 export function parseCoderResponse(response, expectedPath) {
@@ -39,6 +42,11 @@ export function parseCoderResponse(response, expectedPath) {
   }
 
   return { path: expectedPath, content, explanation };
+}
+
+export function parseReviewerVerdict(response) {
+  const match = response.match(/^\s*VERDICT:\s*(APPROVE|ISSUES)\b/im);
+  return match ? match[1] : 'ISSUES';
 }
 
 function createDiff(oldContent, newContent, filePath) {
@@ -102,8 +110,9 @@ export async function runAgentLLM(taskText, agentId, options = {}) {
 
 export async function runCodeAgent(taskText, filePath, currentContent) {
   const configuredTimeout = Number.parseInt(process.env.OLLAMA_TIMEOUT || '', 10);
+  const context = truncateFileContext(currentContent);
   const result = await runAgentLLM(taskText, 'coder', {
-    prompt: buildCodePrompt(taskText, filePath, truncateFileContext(currentContent)),
+    prompt: buildCodePrompt(taskText, filePath, context.content),
     timeoutMs: Number.isFinite(configuredTimeout) && configuredTimeout > 0 ? configuredTimeout : 300000,
     numPredict: 3000
   });
@@ -113,6 +122,7 @@ export async function runCodeAgent(taskText, filePath, currentContent) {
   return {
     ...result,
     ...parsed,
+    contextTruncated: context.truncated,
     diff: createDiff(currentContent, parsed.content, filePath)
   };
 }
