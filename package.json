@@ -10,7 +10,7 @@
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
     "diagnose": "node src/index.js --diagnose",
-    "test": "node --test src/ollama.test.js",
+    "test": "node --test src/ollama.test.js src/orchestrator.test.js",
     "route": "node src/index.js route",
     "task": "node src/index.js task",
     "ollama-status": "node src/index.js ollama-status",

@@ -9,6 +9,10 @@ function buildReviewerPrompt(taskText) {
   return `You are the reviewer agent. Inspect the following task for likely bugs, risks, and unknowns. Return a short structured review with: issues, risks, and validation steps.\n\nTask: ${taskText}`;
 }
 
+function buildCoderPrompt(taskText) {
+  return `You are the coding agent. Turn the following task into an implementation-ready change plan. Identify files to change, the intended behavior, edge cases, and validation commands. Do not claim to have edited files; return only the proposed implementation plan.\n\nTask: ${taskText}`;
+}
+
 export async function runAgentLLM(taskText, agentId) {
   const status = await getOllamaStatus();
 
@@ -22,6 +26,7 @@ export async function runAgentLLM(taskText, agentId) {
   }
 
   const promptMap = {
+    coder: buildCoderPrompt(taskText),
     planner: buildPlannerPrompt(taskText),
     reviewer: buildReviewerPrompt(taskText)
   };
@@ -30,7 +35,7 @@ export async function runAgentLLM(taskText, agentId) {
   if (!prompt) {
     return {
       available: false,
-      warning: 'LLM execution is only enabled for planner and reviewer agents.',
+      warning: 'LLM execution is only enabled for coder, planner, and reviewer agents.',
       agentId
     };
   }
@@ -64,7 +69,7 @@ export function createOrchestrator() {
         nextStep: `Execute the task in the ${selected.role} lane and validate the result.`
       };
 
-      if (!options.useLLM || !['planner', 'reviewer'].includes(selected.id)) {
+      if (!options.useLLM || !['coder', 'planner', 'reviewer'].includes(selected.id)) {
         return base;
       }
 
@@ -90,7 +95,7 @@ export function runDiagnosis() {
       'Add a repo-level workflow for planning, coding, review, and security tasks.',
       'Connect VS Code, GitHub, and Ollama as separate layers in the stack.',
       'Keep the orchestration agent as the single decision-maker for task routing.',
-      'Use planner and reviewer agents with Ollama-backed prompts, while keeping security/ops rules-based unless a stronger LLM strategy is needed.'
+      'Use coder, planner, and reviewer agents with Ollama-backed prompts, while keeping security/ops rules-based unless a stronger LLM strategy is needed.'
     ]
   };
 }
