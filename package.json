@@ -1,0 +1,19 @@
+{
+  "name": "brain-orchestrator",
+  "version": "1.0.0",
+  "description": "Brain + agents orchestration skeleton for VS Code, GitHub, Codex, Copilot and Ollama workflows.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "diagnose": "node src/index.js --diagnose",
+    "test": "node --test src/ollama.test.js",
+    "route": "node src/index.js route",
+    "task": "node src/index.js task",
+    "ollama-status": "node src/index.js ollama-status",
+    "ollama-prompt": "node src/index.js ollama-prompt"
+  }
+}
