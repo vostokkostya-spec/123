@@ -75,11 +75,13 @@ node src/index.js ollama-prompt "prompt"
 - `security` and `ops` are intentionally rules-based, not LLM-backed.
 - Keyword routing can misclassify ambiguous tasks.
 - The diff renderer is intentionally lightweight and should be replaced with a mature diff library if multi-file edits are introduced.
+- Long files are currently truncated from the beginning at approximately 4,500 tokens; chunking or a head/tail strategy is backlog work.
 - No external knowledge corpus was downloaded because the approved scope was the current repository only.
 
 ## Next safe steps
 
-1. Merge and verify the hardening PR.
-2. Add structured task history if persistent memory is needed.
-3. Add multi-file proposals only after extending path validation and review coverage.
-4. Add LLM-based routing only behind a deterministic fallback and tests.
+1. Coder LLM flow is implemented and verified; merge and verify the hardening PR.
+2. Add LLM-based routing only behind a deterministic keyword fallback and tests.
+3. Add structured task history if persistent memory is needed.
+4. Add chunking for long files instead of truncating only the beginning.
+5. Add multi-file proposals only after extending path validation and review coverage.

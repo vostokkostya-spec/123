@@ -22,7 +22,7 @@ Run `npm test` before committing. CI must not require a running Ollama instance;
 
 ## Ollama defaults
 
-- Default chat model: `qwen3:4b-instruct` when installed.
+- Default chat model: `qwen3:4b-instruct` when installed. This conservative default is intentional for the observed CPU-only environment: AMD Radeon RX 580, no NVIDIA acceleration, and approximately 31.1 GB RAM.
 - Embedding models must never be selected for text generation.
 - `num_ctx` defaults to `8192`.
 - Planner/reviewer requests use a 60-second timeout.
