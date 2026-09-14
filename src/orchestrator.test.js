@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createOrchestrator, parseCoderResponse, truncateFileContext } from './orchestrator.js';
+import { createOrchestrator, parseCoderResponse, parseReviewerVerdict, truncateFileContext } from './orchestrator.js';
 
 test('coder response parsing rejects missing required markers', () => {
   assert.throws(
@@ -12,8 +12,14 @@ test('coder response parsing rejects missing required markers', () => {
 
 test('coder context is bounded to the input budget', () => {
   const context = truncateFileContext('a'.repeat(20000));
-  assert.ok(context.length < 20000);
-  assert.match(context, /Context truncated/);
+  assert.ok(context.content.length < 20000);
+  assert.equal(context.truncated, true);
+  assert.match(context.content, /Context truncated/);
+});
+
+test('reviewer defaults to ISSUES when no verdict marker is returned', () => {
+  assert.equal(parseReviewerVerdict('The proposed change looks reasonable.'), 'ISSUES');
+  assert.equal(parseReviewerVerdict('VERDICT: APPROVE\nNo issues found.'), 'APPROVE');
 });
 
 test('coder uses the Ollama-backed implementation prompt', async () => {
