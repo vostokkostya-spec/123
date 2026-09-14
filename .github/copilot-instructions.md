@@ -16,6 +16,16 @@ This repository contains a local AI orchestration CLI for VS Code, GitHub, Ollam
 
 Use `node src/index.js code "task" --file path/to/file` to generate a proposal. The command must print a diff and must not write by default. `--apply` requires an interactive confirmation. Never bypass this safeguard in automation.
 
+## Merge protocol
+
+Never merge a pull request autonomously. A merge is allowed only when:
+
+1. review is complete and no blocking issue remains;
+2. the final commit has green required CI checks; and
+3. the repository owner has explicitly confirmed the merge.
+
+Record the merge commit and validation result in the project knowledge and task register. If any condition is missing, leave the pull request open.
+
 ## Validation
 
 Run `npm test` before committing. CI must not require a running Ollama instance; use mocked `fetch` responses for Ollama tests.
