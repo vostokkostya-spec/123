@@ -29,6 +29,14 @@ function handleLlmUnavailable() {
   return status;
 }
 
+function formatRouting(route) {
+  const target = route.agent?.id || 'unknown';
+  if (route.routing === 'llm') {
+    return `llm -> ${target} (reason: ${route.reason})`;
+  }
+  return `keyword -> ${target}`;
+}
+
 function parseCodeArgs(codeArgs) {
   const apply = codeArgs.includes('--apply');
   const fileIndex = codeArgs.indexOf('--file');
@@ -78,11 +86,11 @@ async function main() {
     const ollamaStatus = await getOllamaStatus();
 
     if (!ollamaStatus.online) {
-      console.log(JSON.stringify({ ...routeResult, warning: 'LLM is unavailable; route remains keyword-based until Ollama is running.', num_ctx: resolveNumCtx() }, null, 2));
+      console.log(JSON.stringify({ ...routeResult, routingLabel: formatRouting(routeResult.routing), warning: 'LLM is unavailable; route remains keyword-based until Ollama is running.', num_ctx: resolveNumCtx() }, null, 2));
       return;
     }
 
-    console.log(JSON.stringify({ ...routeResult, ollama: ollamaStatus }, null, 2));
+    console.log(JSON.stringify({ ...routeResult, routingLabel: formatRouting(routeResult.routing), ollama: ollamaStatus }, null, 2));
     return;
   }
 
