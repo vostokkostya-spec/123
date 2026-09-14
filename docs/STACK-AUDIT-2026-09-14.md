@@ -1,6 +1,6 @@
 # AI stack audit report
 
-**Date:** 2026-09-14  
+**Date:** 2026-09-14 12:40 MSK
 **Scope:** Current repository, GitHub repository metadata/CI, local Ollama API, and public technical documentation.  
 **Excluded:** Browser windows, Chrome cookies, VS Code/Codex private session databases, external disks, personal files, and unapproved software installation.
 
@@ -85,16 +85,18 @@ No authenticated social or browser-cookie data was accessed.
 - Router request verification: `temperature=0`, `num_predict=120`.
 - CLI examples: `keyword -> reviewer` for `Fix the login bug`; `llm -> planner (reason: ...)` for a release-planning request.
 - Live coder/reviewer flow: proposed the intended arithmetic fix and returned `VERDICT: APPROVE`.
-- CI was green for the hybrid routing changes.
+- CI was green for the hybrid routing changes; PR #5 is open, `MERGEABLE`, and `CLEAN`.
+- Agent Reach is v1.5.0 and the update check reports no newer version.
 
 ## Open tasks
 
 1. Merge and verify the hybrid routing PR.
 2. Replace marker-only routing with Ollama structured JSON output after adding schema validation and compatibility tests.
-3. Add persistent task history only after defining retention and redaction rules.
-4. Replace beginning-only truncation with chunking or a head/tail strategy.
-5. Extend coder proposals to multiple files only after adding path, size, and review safeguards.
-6. Evaluate optional third-party agents one at a time, from pinned, auditable sources.
+3. Add a reviewer gate that prevents `--apply` when the verdict is `ISSUES`.
+4. Add persistent task history only after defining retention and redaction rules.
+5. Replace beginning-only truncation with chunking or a head/tail strategy.
+6. Extend coder proposals to multiple files only after adding path, size, and review safeguards.
+7. Evaluate optional third-party agents one at a time, from pinned, auditable sources.
 
 ## Conclusion
 

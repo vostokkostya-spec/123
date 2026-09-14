@@ -1,6 +1,6 @@
 # Project knowledge base
 
-**Generated:** 2026-09-14  
+**Generated:** 2026-09-14 12:40 MSK
 **Scope:** Current repository only. No personal folders, external disks, or private data were indexed.
 
 ## Executive summary
@@ -64,11 +64,11 @@ node src/index.js ollama-prompt "prompt"
 
 ## Verification record
 
-- Unit suite: 10 tests passed after coder hardening.
+- Unit suite: 16 tests passed, including hybrid-routing success and fallback cases.
 - Live coder test: corrected an intentional `a - b` bug to `a + b`.
 - Live reviewer test: returned `VERDICT: APPROVE`.
 - No-apply verification: the source file remained unchanged.
-- CI: green on the hardening PR before merge review.
+- CI: PR #5 is open, mergeable, and its `validate` checks are green.
 
 ## Known gaps
 
@@ -80,11 +80,14 @@ node src/index.js ollama-prompt "prompt"
 - The diff renderer is intentionally lightweight and should be replaced with a mature diff library if multi-file edits are introduced.
 - Long files are currently truncated from the beginning at approximately 4,500 tokens; chunking or a head/tail strategy is backlog work.
 - No external knowledge corpus was downloaded because the approved scope was the current repository only.
+- Public documentation confirms Ollama structured JSON/schema output and VS Code workspace/user agent customization scopes; these are recorded as planned integrations, not yet enabled.
+- Agent Reach v1.5.0 is current. GitHub CLI, web, RSS, YouTube, Bilibili, and V2EX paths are available; login-dependent channels remain unconfigured.
 
 ## Next safe steps
 
 1. Merge and verify the hybrid LLM routing PR.
 2. Replace marker-only routing with Ollama structured JSON and schema validation.
-3. Add structured task history if persistent memory is needed.
-4. Add chunking for long files instead of truncating only the beginning.
-5. Add multi-file proposals only after extending path validation and review coverage.
+3. Add a reviewer gate that blocks `--apply` on `ISSUES`.
+4. Add structured task history only after defining retention and redaction rules.
+5. Add chunking for long files instead of truncating only the beginning.
+6. Add multi-file proposals only after extending path validation and review coverage.
