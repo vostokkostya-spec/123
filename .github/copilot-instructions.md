@@ -37,6 +37,8 @@ Run `npm test` before committing. CI must not require a running Ollama instance;
 - `num_ctx` defaults to `8192`.
 - Planner/reviewer requests use a 60-second timeout.
 - Code generation uses a 300-second timeout by default and may be overridden with `OLLAMA_TIMEOUT`.
+- Keep `qwen3:4b-instruct` as the default local model. Cloud models are opt-in only through an explicit role override such as `OLLAMA_CODER_MODEL=gpt-oss:20b-cloud`.
+- Never send repository code, secrets, or private file context to a cloud model unless the owner explicitly approved that task. Do not replace the local default with a cloud model automatically.
 
 ## Change requirements
 
