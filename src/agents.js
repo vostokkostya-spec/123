@@ -38,21 +38,18 @@ export function getDefaultAgents() {
 export function pickBestAgent(taskText) {
   const normalized = taskText.toLowerCase();
 
-  if (/(fix|bug|error|review|quality|lint|test)/.test(normalized)) {
-    return 'reviewer';
-  }
+  return getKeywordMatches(normalized)[0] ?? 'coder';
+}
 
-  if (/(security|secret|auth|risk|vuln)/.test(normalized)) {
-    return 'security';
-  }
+export function getKeywordMatches(taskText) {
+  const normalized = taskText.toLowerCase();
+  const matches = [];
 
-  if (/(build|deploy|run|docker|ci|ops)/.test(normalized)) {
-    return 'ops';
-  }
+  if (/(fix|bug|error|исправь|ошибк)/.test(normalized)) matches.push('coder');
+  if (/(review|quality|lint|test|check|audit|проверь)/.test(normalized)) matches.push('reviewer');
+  if (/(security|secret|auth|risk|vuln)/.test(normalized)) matches.push('security');
+  if (/(build|deploy|run|docker|ci|ops|release)/.test(normalized)) matches.push('ops');
+  if (/(plan|roadmap|spec|architecture|strategy|план)/.test(normalized)) matches.push('planner');
 
-  if (/(plan|roadmap|spec|architecture|strategy)/.test(normalized)) {
-    return 'planner';
-  }
-
-  return 'coder';
+  return matches;
 }

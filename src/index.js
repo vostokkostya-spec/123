@@ -14,6 +14,7 @@ function printHelp() {
 Usage:
   node src/index.js --diagnose
   node src/index.js route "fix auth bug"
+  node src/index.js route "ambiguous task" --llm
   node src/index.js task "plan a release workflow"
   node src/index.js code "add input validation" --file src/example.js [--apply]
   node src/index.js ollama-status
@@ -26,6 +27,14 @@ function handleLlmUnavailable() {
   const status = { online: false, endpoint: 'http://localhost:11434', warning: 'Ollama is not available.', hint: 'Start Ollama and download a chat model before using LLM commands.' };
   console.log(JSON.stringify(status, null, 2));
   return status;
+}
+
+function formatRouting(route) {
+  const target = route.agent?.id || 'unknown';
+  if (route.routing === 'llm') {
+    return `llm -> ${target} (reason: ${route.reason})`;
+  }
+  return `keyword -> ${target}`;
 }
 
 function parseCodeArgs(codeArgs) {
@@ -71,16 +80,17 @@ async function main() {
   }
 
   if (args[0] === 'route') {
-    const taskText = args.slice(1).join(' ') || 'Plan the next engineering step for this repository.';
-    const routeResult = await orchestrator.run(taskText);
+    const forceLLM = args.includes('--llm');
+    const taskText = args.slice(1).filter((arg) => arg !== '--llm').join(' ') || 'Plan the next engineering step for this repository.';
+    const routeResult = await orchestrator.run(taskText, { forceLLM });
     const ollamaStatus = await getOllamaStatus();
 
     if (!ollamaStatus.online) {
-      console.log(JSON.stringify({ ...routeResult, warning: 'LLM is unavailable; route remains keyword-based until Ollama is running.', num_ctx: resolveNumCtx() }, null, 2));
+      console.log(JSON.stringify({ ...routeResult, routingLabel: formatRouting(routeResult.routing), warning: 'LLM is unavailable; route remains keyword-based until Ollama is running.', num_ctx: resolveNumCtx() }, null, 2));
       return;
     }
 
-    console.log(JSON.stringify({ ...routeResult, ollama: ollamaStatus }, null, 2));
+    console.log(JSON.stringify({ ...routeResult, routingLabel: formatRouting(routeResult.routing), ollama: ollamaStatus }, null, 2));
     return;
   }
 

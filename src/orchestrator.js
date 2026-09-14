@@ -1,4 +1,4 @@
-import { getDefaultAgents, pickBestAgent } from './agents.js';
+import { getDefaultAgents, getKeywordMatches, pickBestAgent } from './agents.js';
 import { generateWithOllama, getOllamaStatus } from './ollama.js';
 
 function buildPlannerPrompt(taskText) {
@@ -49,6 +49,48 @@ export function parseReviewerVerdict(response) {
   return match ? match[1] : 'ISSUES';
 }
 
+export function buildRoutingPrompt(taskText, agents = getDefaultAgents()) {
+  const descriptions = agents.map((agent) => `${agent.id}: ${agent.responsibilities[0]}`).join('\n');
+  return `Classify the engineering task into exactly one agent. Return only this format:
+### AGENT: <planner|coder|reviewer|security|ops>
+### REASON: <one sentence>
+
+Agents:
+${descriptions}
+
+Task: ${taskText}`;
+}
+
+export function parseRoutingResponse(response, agents = getDefaultAgents()) {
+  const agentMatch = response.match(/^\s*###\s*AGENT:\s*([a-z]+)\s*$/im);
+  const reasonMatch = response.match(/^\s*###\s*REASON:\s*(.+)$/im);
+  const agentId = agentMatch?.[1]?.toLowerCase();
+  if (!agentId || !agents.some((agent) => agent.id === agentId) || !reasonMatch?.[1]?.trim()) {
+    throw new Error('Router returned an invalid format: expected ### AGENT and ### REASON markers.');
+  }
+  return { agentId, reason: reasonMatch[1].trim() };
+}
+
+export async function classifyTask(taskText, agents = getDefaultAgents()) {
+  try {
+    const result = await runAgentLLM(taskText, 'router', {
+      prompt: buildRoutingPrompt(taskText, agents),
+      timeoutMs: 60000,
+      temperature: 0,
+      numPredict: 120
+    });
+    if (!result.available) {
+      return { available: false, warning: result.warning || result.summary };
+    }
+    return { available: true, ...parseRoutingResponse(result.summary, agents), model: result.model };
+  } catch (error) {
+    return {
+      available: false,
+      warning: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
 function createDiff(oldContent, newContent, filePath) {
   const oldLines = oldContent.split(/\r?\n/);
   const newLines = newContent.split(/\r?\n/);
@@ -96,7 +138,8 @@ export async function runAgentLLM(taskText, agentId, options = {}) {
 
   const llmResult = await generateWithOllama(prompt, process.env.OLLAMA_MODEL, {
     timeoutMs: options.timeoutMs ?? 60000,
-    numPredict: options.numPredict
+    numPredict: options.numPredict,
+    temperature: options.temperature
   });
   return {
     available: true,
@@ -136,14 +179,35 @@ export function createOrchestrator() {
       const selectedId = pickBestAgent(taskText);
       return agents.find((agent) => agent.id === selectedId) ?? agents[0];
     },
+    async routeTask(taskText, options = {}) {
+      const keywordMatches = getKeywordMatches(taskText);
+      const keywordAgent = this.route(taskText);
+      if (!options.forceLLM && keywordMatches.length === 1) {
+        return { agent: keywordAgent, routing: 'keyword', reason: 'single unambiguous keyword match' };
+      }
+
+      const classified = await classifyTask(taskText, agents);
+      if (classified.available) {
+        const agent = agents.find((candidate) => candidate.id === classified.agentId);
+        return { agent: agent ?? keywordAgent, routing: 'llm', reason: classified.reason, model: classified.model };
+      }
+
+      return {
+        agent: keywordAgent,
+        routing: 'keyword',
+        warning: `LLM routing unavailable; using keyword fallback. ${classified.warning || ''}`.trim()
+      };
+    },
     async run(taskText, options = {}) {
-      const selected = this.route(taskText);
+      const selectedRoute = options.route ?? await this.routeTask(taskText, { forceLLM: options.forceLLM });
+      const selected = selectedRoute.agent;
       const base = {
         task: taskText || 'No task provided',
         selectedAgent: selected.name,
         role: selected.role,
         responsibilities: selected.responsibilities,
-        nextStep: `Execute the task in the ${selected.role} lane and validate the result.`
+        nextStep: `Execute the task in the ${selected.role} lane and validate the result.`,
+        routing: selectedRoute
       };
 
       if (!options.useLLM || !['coder', 'planner', 'reviewer'].includes(selected.id)) {
