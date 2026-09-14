@@ -1,6 +1,16 @@
 # Ollama model matrix
 
-**Updated:** 2026-09-14
+**Updated:** 2026-09-14 12:55 MSK
+
+## Verification
+
+The local Ollama registry was checked at this timestamp. All six detected
+entries are present and readable: four generation models and two embedding
+models. No local model from the current inventory is missing.
+
+Ollama Cloud subscription status cannot be inferred from the local model list.
+This machine currently has no `OLLAMA_API_KEY` configured; cloud access must be
+verified interactively with `ollama signin` or an explicitly supplied API key.
 
 ## Local models detected
 
